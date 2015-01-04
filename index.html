@@ -47,52 +47,10 @@
 <![endif]-->
 
     <!-- 页面内容 开发时删除 -->
-    <button class="am-btn am-btn-primary" data-am-modal="{target: '#doc-modal-1'}">Modal</button>
+<p><input type="text" class="am-form-field am-radius" placeholder="日历组件" data-am-datepicker readonly/></p>
 
-    <div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
-        <div class="am-modal-dialog">
-            <div class="am-modal-hd">
-                Modal 标题
-     
-                <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
-            </div>
-            <div class="am-modal-bd">
-                <form  runat="server" style="text-align: left; width: 340px">
-                    <div>
-                        <div>
-                            标题：<asp:textbox id="tbtitle" style="background-color: transparent;" width="221px" runat="server"></asp:textbox>
-                            <asp:requiredfieldvalidator id="RequiredFieldValidator1" runat="server" controltovalidate="tbtitle" display="Dynamic" errormessage="RequiredFieldValidator" forecolor="Red">不能为空</asp:requiredfieldvalidator>
-                        </div>
-                        <div id="dvmycontent">
-                            <div>作业要求：</div>
-                            <textarea id="tacontent" style="height: 200px; width: 336px" runat="server" name="S1"></textarea>
-                        </div>
-                        <div id="dvattach" style="width: 336px" runat="server">
-                            截止日期:
-                <asp:textbox id="tb_endtime" runat="server"></asp:textbox>
-                            <br />
-                            发布班级:<br />
-                            <asp:listbox id="ListBox1" runat="server" font-size="Large" height="108px" selectionmode="Multiple" width="237px"></asp:listbox>
-                        </div>
-                        <div>
-                            <asp:button id="bt_submit" runat="server" text="提交作业" onclick="bt_submit_Click" />
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        </div>
-                    </div>
-                    <div style="height: 5px"></div>
-
-                    <script type="text/javascript">
-                        function queren() {
-                            if (confirm('你真的要删除这条数据吗'))
-                                return true;
-                            else
-                                return false;
-                        }
-                    </script>
-                </form>
-            </div>
-        </div>
-    </div>
+    <div class="doc-example"><p><input type="text" class="am-form-field am-radius" placeholder="日历组件" id="doc-datepicker"></p>
+</div>
 
     <!-- 以上页面内容 开发时删除 -->
 
@@ -108,6 +66,10 @@
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/amazeui.min.js"></script>
     <!--<![endif]-->
+        <script>
+            $(function () { $("#doc-datepicker").datepicker().on("changeDate.datepicker.amui", function (e) { console.log(e.date) }) });
 
+        </script>
 </body>
+
 </html>

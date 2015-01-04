@@ -59,12 +59,14 @@ public partial class WorkProgress : System.Web.UI.Page
     }
     protected void ClassList_SelectedIndexChanged(object sender, EventArgs e)
     {
-        Response.Redirect("TeacherCenter.aspx?classid=" + ClassList.SelectedValue.ToString());
+        Response.Redirect("WorkProgress.aspx?workid="+workid+"&classid=" + ClassList.SelectedValue.ToString());
     }
     protected void PackDownload_ServerClick(object sender, EventArgs e)
     {
         Bean bean = new Bean();
         ArrayList arrays=bean.GetAttaches(workid, classid);
+        if (arrays.Count<1)
+            return;
         ZipFiles(arrays);
     }
     public void ZipFiles(ArrayList arrays)

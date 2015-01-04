@@ -47,11 +47,12 @@ public class Bean
         string Attach = "";
         string AttachName = "";
         id = dr["WorkID"].ToString();
-        url = "WorkProgress.aspx?workid=" + id + "&classid=" + dr["ClassID"].ToString();//设置链接
+      //  url = "WorkProgress.aspx?workid=" + id + "&classid=" + dr["ClassID"].ToString();//设置链接
+        url = "WorkProgress.aspx?workid=" + id;//设置链接
         title = dr["Title"].ToString();
         claName = dr["claName"].ToString();
         type = "作业";//TODO:这个要改
-        progress = GetWorkCount(id);
+        progress = GetWorkCount(id,dr["ClassID"].ToString());
         ReleaseTime = Convert.ToDateTime(dr["ReleaseTime"]).ToShortDateString();
         try
         {
@@ -181,14 +182,16 @@ public class Bean
     /// </summary>
     /// <param name="workid">工作id</param>
     /// <returns></returns>
-    private string GetWorkCount(string workid)
+    private string GetWorkCount(string workid,string classid)
     {
-        string sql = "select (select count(*) from CommitWork where WorkID='" + workid + "' and StudentID in(select StudentID from StudentInfo where ClassID=cla.ClassID)) as Finished,count(StudentID) as Total,cla.Name,cla.ClassID from StudentInfo,ClassInfo cla where cla.ClassID=StudentInfo.ClassID group by StudentInfo.ClassID,cla.Name,cla.ClassID";
+        string sql = "select (select count(*) from CommitWork where WorkID='" + workid + "' and StudentID in(select StudentID from StudentInfo where ClassID=cla.ClassID)) as Finished,count(StudentID) as Total,cla.Name,cla.ClassID from StudentInfo,ClassInfo cla where cla.ClassID=StudentInfo.ClassID"+
+            " and cla.ClassID='"+classid+"' group by StudentInfo.ClassID,cla.Name,cla.ClassID";
         DataTable dt = dao.GetDataTable(sql);
         string html = "";
-        for (int i = 0; i < dt.Rows.Count; i++)
+        for (int i = 0; i < dt.Rows.Count; i++)//count这里肯定为1
         {
-            html += dt.Rows[i]["Finished"].ToString() + "/" + dt.Rows[i]["Total"].ToString() + " " + dt.Rows[i]["Name"] + "</br>";
+          //  html += dt.Rows[i]["Finished"].ToString() + "/" + dt.Rows[i]["Total"].ToString() + " " + dt.Rows[i]["Name"] + "</br>";
+            html += dt.Rows[i]["Finished"].ToString() + "/" + dt.Rows[i]["Total"].ToString()+"</br>";
         }
         return html;
     }
@@ -267,13 +270,23 @@ public class Bean
         ArrayList arrays = new ArrayList();//第一个为readme.txt 第二个为班级名 后面为string[2] 0项：文件名 1项：文件路径
         string sql = "select distinct StudentInfo.Name,StudentInfo.StudentID,Attach from StudentInfo,CommitWork where CommitWork.WorkID='" +
           workid + "' and StudentInfo.StudentID=CommitWork.StudentID ";
+
+        string className;
         if (classid != "[ALL]" && classid.Trim() != "")
+        {
             sql += " and StudentInfo.ClassID='" + classid + "'";
+
+            DataRow claname = dao.GetDataRow("select Name from ClassInfo where classid='" + classid + "'");
+            if (claname == null)
+                return arrays;
+            className = claname[0].ToString();
+        }
+        else
+        {
+            className = "所有班级";
+        }
         sql += " ORDER BY StudentInfo.StudentID ASC";
         DataTable dt = dao.GetDataTable(sql);
-
-        string className=dao.GetDataRow("select Name from ClassInfo where classid='"+classid+"'")[0].ToString();
-
 
         int count = 0;
         string notfound = "";
